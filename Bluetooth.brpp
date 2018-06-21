@@ -1,0 +1,33 @@
+definir pinoLuzSala 22
+definir pinoLuzGaragem 24
+
+Configuracao(){
+	Pino.definirModo(pinoLuzSala, Saida);
+	Pino.definirModo(pinoLuzGaragem, Saida);
+	USB1.conectar(9600);
+	USB.conectar(9600);
+}
+
+Principal(){
+	se(USB1.disponivel()>0){
+		Letra opcao = USB1.ler();
+		USB1.enviarln(opcao);
+		seletor(opcao){
+			caso 'g':
+				Pino.ligar(pinoLuzGaragem);
+				quebrar;
+			caso 'G': 
+				Pino.desligar(pinoLuzGaragem);
+        quebrar;
+			caso 's':
+				Pino.ligar(pinoLuzSala);
+				quebrar;
+      caso 'S':
+        Pino.desligar(pinoLuzSala);
+        quebrar;
+			caso 'd':
+				Pino.desligar(22);
+				Pino.desligar(24);
+		}
+	}
+}
