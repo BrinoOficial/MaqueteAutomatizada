@@ -1,65 +1,84 @@
 usar  SPI
 usar MFRC522
- 
+
 definir  PINO_SS 10
 definir PINO_RST 9
 definir LUZ_GARAGEM 13
+definir LUZ_SALA 12
 MFRC522 mfrc522(PINO_SS, PINO_RST); // Create MFRC522 instance.
  
 char st[20];
  
 void setup(){
-  Serial.begin(9600); // Inicia a serial
-  SPI.begin(); // Inicia  SPI bus
-  mfrc522.PCD_Init(); // Inicia MFRC522
-  Pino.definirModo(LUZ_GARAGEM, Saida);
-  Serial.println("Aproxime o seu cartao do leitor...");
-  Serial.println();
-  //Define o número de colunas e linhas do LCD:  
-
+	USB.conectar(9600); // Inicia a serial
+	SPI.conectar(); // Inicia  SPI bus
+	mfrc522.PCD_Init(); // Inicia MFRC522
+	Pino.definirModo(LUZ_GARAGEM, Saida);
+	Pino.definirModo(LUZ_SALA,Saida);
+	mensagemInicial();  //Define o número de colunas e linhas do LCD:  
 }
  
 void loop() {
   // Look for new cards
-  se ( ! mfrc522.PICC_IsNewCardPresent())  {
-    responder;
-  }
+ 	se ( ! mfrc522.PICC_IsNewCardPresent())  {
+ 		responder;
+ 	  }
   // Select one of the cards
-  se( ! mfrc522.PICC_ReadCardUSB())  {
-    responder;
-  }
+	se( ! mfrc522.PICC_ReadCardUSB())  {
+ 		responder;
+	 }	
   //Mostra UID na serial
-  USB.enviar("UID da tag :");
-  Palavra conteudo= "";
-  byte letra;
-  para (byte i = 0; i < mfrc522.uid.size; i++) {
-     USB.enviar(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
-    USB.enviar(mfrc522.uid.uidByte[i], HEX);
-     conteudo.concat(Palavra(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
-     conteudo.concat(Palavra(mfrc522.uid.uidByte[i], HEX));
-  }
-  USB.enviarln();
-  USB.enviar("Mensagem : ");
-  conteudo.toUpperCase();
- se (conteudo.substring(1) == "B5 DF EB 4B")  {//UID 1 - Chaveiro 
-   USB.enviarln("Ola Campuseiro!");
-   USB.enviarln();
-    USB.enviarln("Acesso Aprovado!");
-    Pino.ligar(LUZ_GARAGEM);
-    esperar(3000);
-    Pino.desligar(LUZ_GARAGEM);
-    mensageminicial();
- }
+  	USB.enviar("UID da tag :");
+  	Palavra conteudo= "";
+ 	byte letra;
+ 	para (byte i = 0; i < mfrc522.uid.size; i++) {
+ 		USB.enviar(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+ 		USB.enviar(mfrc522.uid.uidByte[i], HEX);
+		conteudo.concat(Palavra(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+		conteudo.concat(Palavra(mfrc522.uid.uidByte[i], HEX));
+	}
+ 	USB.enviarln();
+	USB.enviar("Mensagem : ");
+  	conteudo.toUpperCase();
+	se (conteudo.substring(1) == "B5 DF EB 4B")  {//UID 1 - Chaveiro 
+		USB.enviarln("Ola Campuseiro!");
+		USB.enviarln();
+		USB.enviarln("Acesso Aprovado!");
+		esperar(3000);
+		mensagemInicial();
+	}
  
-se (conteudo.substring(1) == "75 7F E7 4B") {//UID 2 - Cartao  
-    USB.enviarln("Intruso !");
-    USB.enviarln();
-    USB.enviarln("Acesso Negado!");
-    esperar(3000);
-    mensageminicial();
-  }
+  	se (conteudo.substring(1) == "75 7F E7 4B") {//UID 2 - Cartao  
+		USB.enviarln("Intruso !");
+		USB.enviarln();
+		USB.enviarln("Acesso Negado!");
+		esperar(3000);
+ 		mensagemInicial();
+   	}
+   	se(USB.disponivel()>0){
+		Letra opcao = USB.ler();
+		USB.enviarln(opcao);
+		switch(opcao){
+			caso 'g':
+				Pino.ligar(LUZ_GARAGEM);
+				quebrar;
+			caso 'G': 
+				Pino.desligar(LUZ_GARAGEM);
+        				quebrar;
+			caso 's':
+				Pino.ligar(LUZ_SALA);
+				quebrar;
+      			caso 'S':
+        				Pino.desligar(LUZ_SALA);
+        			quebrar;
+			caso 'd':
+				Pino.desligar(22);
+				Pino.desligar(24);
+		}
+	}
 } 
  
-void mensageminicial(){
-  USB.println(" Aproxime o seu cartao do leitor");  
+void mensagemInicial(){
+	USB.println(" Aproxime o seu cartao do leitor");  
+	USB.println();
 }
