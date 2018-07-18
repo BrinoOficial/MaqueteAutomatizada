@@ -10,7 +10,7 @@ Desenvolvido no Ubuntu 16.04 LTS 64Bits
 
 ## Autores
 
-* **Víctor Rodrigues Pacheco** - *Autor* - [granix3](https://github.com/granix3)
+* **Víctor Rodrigues Pacheco** - *Autor* - [VictorRPacheco](https://github.com/VictorRPacheco)
 * **Gabriel Rodrigues Pacheco** - *Autor* - [GabrielRPacheco](https://github.com/gabrielRPacheco)
 * **Rafael Mascarenhas Dal Moro** - *Autor* - [rafaelmdalmoro](https://github.com/rafaelmdalmoro)
 * **Mateus Berardo de Souza Terra** - *Autor* - [MatTerra](https://github.com/MatTerra)
